@@ -14,7 +14,7 @@ namespace WMI_Win32_DiskDrive_csharp
             Console.WriteLine("Test #1");
             Console.WriteLine("-----------------");
 
-            WMI_Win32_DiskDrive win32diskDrive = WMI_Win32_DiskDrive.Instance;
+            WMI_Win32_DiskDrive_Query win32diskDrive = WMI_Win32_DiskDrive_Query.Instance;
             Console.WriteLine(win32diskDrive.ToString());
 
             Console.WriteLine("-----------------");

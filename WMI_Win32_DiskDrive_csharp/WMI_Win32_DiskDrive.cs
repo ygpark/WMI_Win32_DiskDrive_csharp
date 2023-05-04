@@ -13,63 +13,63 @@ namespace WMI_Win32_DiskDrive_csharp
     /// 
     /// <example>
     ///     // Case #1 초기화
-    ///     var win32diskDrive = WMI_Win32_DiskDrive.Instance;
+    ///     var query = WMI_Win32_DiskDrive_Query.Instance;
     ///     
     ///     // Case #2 필요한 경우 정보 갱신하기
-    ///     win32diskDrive.Refresh();
+    ///     query.Refresh();
     ///     
     ///     // Case #3 모든 디스크의 모든 정보 출력
-    ///     for (int i = 0; i < win32diskDrive.Count; i++)
+    ///     for (int i = 0; i < query.Count; i++)
     ///     {
-    ///       Console.WriteLine(win32diskDrive[i].ToString());
+    ///       Console.WriteLine(query[i].ToString());
     ///     }
     ///     
     ///     // Case #4 Index 속성이 0인 디스크의 정보 가져오기
-    ///     var info = win32diskDrive.GetByDiskIndex(0);
+    ///     var win32_diskdrive = query.GetByDiskIndex(0);
     ///     
     ///     // Case #5 DeviceID 속성이 "\\.\PHYSICALDRIVE2"인 디스크의 정보 가져오기
-    ///     var info = diskDrive.GetByDeviceID("\\.\PHYSICALDRIVE2");
+    ///     var win32_diskdrive = query.GetByDeviceID("\\.\PHYSICALDRIVE2");
     ///     
     ///     // Case #6 Name 속성이 "\\.\PHYSICALDRIVE2"인 디스크의 정보 가져오기
-    ///     var info = diskDrive.GetByName("\\.\PHYSICALDRIVE2");
+    ///     var win32_diskdrive = query.GetByName("\\.\PHYSICALDRIVE2");
     ///     
     ///     // Case #7 Generic List의 Find() 메서드를 직접 활용
-    ///     var info = diskDrive.ToList().Find(o => o.DeviceID == "\\.\PHYSICALDRIVE2");
+    ///     var win32_diskdrive = query.ToList().Find(o => o.DeviceID == "\\.\PHYSICALDRIVE2");
     ///
     /// </example>
     /// 
     /// <remarks>
     /// Win32_DiskDrive 클래스의 일부 속성은 제외되었다.
     /// </remarks>
-    public class WMI_Win32_DiskDrive
+    public class WMI_Win32_DiskDrive_Query
     {
         ///
         /// private 멤버변수
         ///
-        private List<Win32_DiskDrive_Info> _win32_diskdrives;
+        private List<WMI_Win32_DiskDrive> _win32_diskdrives;
         public int Count { get { return _win32_diskdrives.Count; } }
-        public Win32_DiskDrive_Info GetByDiskIndex(int index)
+        public WMI_Win32_DiskDrive GetByDiskIndex(int index)
         {
             return _win32_diskdrives.Find(x => x.Index == index);
         }
-        public Win32_DiskDrive_Info GetByDeviceID(string deviceID)
+        public WMI_Win32_DiskDrive GetByDeviceID(string deviceID)
         {
             return _win32_diskdrives.Find(x => x.DeviceID == deviceID);
         }
-        public Win32_DiskDrive_Info GetByName(string name)
+        public WMI_Win32_DiskDrive GetByName(string name)
         {
             return _win32_diskdrives.Find(x => x.Name == name);
         }
 
         // singletone pattern
-        private static WMI_Win32_DiskDrive _instance;
-        public static WMI_Win32_DiskDrive Instance
+        private static WMI_Win32_DiskDrive_Query _instance;
+        public static WMI_Win32_DiskDrive_Query Instance
         {
             get
             {
                 if (_instance == null)
                 {
-                    _instance = new WMI_Win32_DiskDrive();
+                    _instance = new WMI_Win32_DiskDrive_Query();
                 }
                 return _instance;
             }
@@ -78,10 +78,10 @@ namespace WMI_Win32_DiskDrive_csharp
         /// <summary>
         /// 생성자
         /// </summary>
-        private WMI_Win32_DiskDrive()
+        private WMI_Win32_DiskDrive_Query()
         {
             // 멤버변수 초기화
-            _win32_diskdrives = new List<Win32_DiskDrive_Info>();
+            _win32_diskdrives = new List<WMI_Win32_DiskDrive>();
 
             // WMI를 이용하여 Win32_DiskDrive 정보를 가져온다.
             initialize();
@@ -95,9 +95,9 @@ namespace WMI_Win32_DiskDrive_csharp
             initialize();
         }
 
-        public List<Win32_DiskDrive_Info> ToList()
+        public List<WMI_Win32_DiskDrive> ToList()
         {
-            return new List<Win32_DiskDrive_Info>(_win32_diskdrives);
+            return new List<WMI_Win32_DiskDrive>(_win32_diskdrives);
         }
 
         /// 
@@ -113,7 +113,7 @@ namespace WMI_Win32_DiskDrive_csharp
 
             foreach (var item in physicalDriveList)
             {
-                Win32_DiskDrive_Info newItem = new Win32_DiskDrive_Info();
+                WMI_Win32_DiskDrive newItem = new WMI_Win32_DiskDrive();
 
                 newItem.BytesPerSector = (UInt32)(item["BytesPerSector"] ?? (UInt32)0);
                 newItem.Caption = ((string)item["Caption"] ?? "").Trim();
@@ -175,7 +175,7 @@ namespace WMI_Win32_DiskDrive_csharp
         ///
         /// Operator 재정의
         ///
-        public Win32_DiskDrive_Info this[int index]
+        public WMI_Win32_DiskDrive this[int index]
         {
             get { return _win32_diskdrives[index]; }
         }
@@ -198,7 +198,7 @@ namespace WMI_Win32_DiskDrive_csharp
     /// 
     /// Inner class
     /// 
-    public class Win32_DiskDrive_Info
+    public class WMI_Win32_DiskDrive
     {
         public UInt16 Availability;
 
