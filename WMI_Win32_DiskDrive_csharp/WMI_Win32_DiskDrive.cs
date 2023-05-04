@@ -12,14 +12,29 @@ namespace WMI_Win32_DiskDrive_csharp
     /// </summary>
     /// 
     /// <example>
+    ///     // Case #1 초기화
     ///     var win32diskDrive = WMI_Win32_DiskDrive.Instance;
-    ///     // win32diskDrive.Refresh(); //필요한 경우에만 호출
+    ///     
+    ///     // Case #2 필요한 경우 정보 갱신하기
+    ///     win32diskDrive.Refresh();
+    ///     
+    ///     // Case #3 모든 디스크의 모든 정보 출력
     ///     for (int i = 0; i < win32diskDrive.Count; i++)
     ///     {
     ///       Console.WriteLine(win32diskDrive[i].ToString());
     ///     }
     ///     
-    ///     Console.WriteLine(win32diskDrive.GetByDidskIndex(0).ToString());
+    ///     // Case #4 Index 속성이 0인 디스크의 정보 가져오기
+    ///     var info = win32diskDrive.GetByDiskIndex(0);
+    ///     
+    ///     // Case #5 DeviceID 속성이 "\\.\PHYSICALDRIVE2"인 디스크의 정보 가져오기
+    ///     var info = diskDrive.GetByDeviceID("\\.\PHYSICALDRIVE2");
+    ///     
+    ///     // Case #6 Name 속성이 "\\.\PHYSICALDRIVE2"인 디스크의 정보 가져오기
+    ///     var info = diskDrive.GetByName("\\.\PHYSICALDRIVE2");
+    ///     
+    ///     // Case #7 Generic List의 Find() 메서드를 직접 활용
+    ///     var info = diskDrive.ToList().Find(o => o.DeviceID == "\\.\PHYSICALDRIVE2");
     ///
     /// </example>
     /// 
@@ -33,9 +48,17 @@ namespace WMI_Win32_DiskDrive_csharp
         ///
         private List<Win32_DiskDrive_Info> _win32_diskdrives;
         public int Count { get { return _win32_diskdrives.Count; } }
-        public Win32_DiskDrive_Info GetByDidskIndex(int index)
+        public Win32_DiskDrive_Info GetByDiskIndex(int index)
         {
             return _win32_diskdrives.Find(x => x.Index == index);
+        }
+        public Win32_DiskDrive_Info GetByDeviceID(string deviceID)
+        {
+            return _win32_diskdrives.Find(x => x.DeviceID == deviceID);
+        }
+        public Win32_DiskDrive_Info GetByName(string name)
+        {
+            return _win32_diskdrives.Find(x => x.Name == name);
         }
 
         // singletone pattern
@@ -170,166 +193,167 @@ namespace WMI_Win32_DiskDrive_csharp
             return sb.ToString();
         }
 
-        /// 
-        /// Inner class
-        /// 
-        public class Win32_DiskDrive_Info
+    }
+
+    /// 
+    /// Inner class
+    /// 
+    public class Win32_DiskDrive_Info
+    {
+        public UInt16 Availability;
+
+        public UInt32 BytesPerSector;
+
+        public string Caption;
+        public string CompressionMethod;
+        public UInt32 ConfigManagerErrorCode;
+        public bool ConfigManagerUserConfig;
+        public string CreationClassName;
+
+        public UInt64 DefaultBlockSize;
+        public string Description;
+        public string DeviceID;
+
+        public bool ErrorCleared;
+        public string ErrorDescription;
+        public string ErrorMethodology;
+
+        public string FirmwareRevision;
+
+        public UInt32 Index;
+        public string InterfaceType;
+
+        public UInt32 LastErrorCode;
+
+        public string Manufacturer;
+        public UInt64 MaxBlockSize;
+        public UInt64 MaxMediaSize;
+        public bool MediaLoaded;
+        public string MediaType;
+        public UInt64 MinBlockSize;
+        public string Model;
+
+        public string Name;
+        public bool NeedsCleaning;
+        public UInt32 NumberOfMediaSupported;
+
+        public UInt32 Partitions;
+        public string PNPDeviceID;
+        public bool PowerManagementSupported;
+
+        public UInt32 SCSIBus;
+        public UInt16 SCSILogicalUnit;
+        public UInt16 SCSIPort;
+        public UInt16 SCSITargetId;
+        public UInt32 SectorsPerTrack;
+        public string SerialNumber;
+        public UInt32 Signature;
+        public UInt64 Size;
+        public string Status;
+        public UInt16 StatusInfo;
+        public string SystemCreationClassName;
+        public string SystemName;
+
+        public UInt64 TotalCylinders;
+        public UInt32 TotalHeads;
+        public UInt64 TotalSectors;
+        public UInt64 TotalTracks;
+        public UInt32 TracksPerCylinder;
+        //public UInt16 Capabilities[];
+        //public string CapabilityDescriptions[];
+        //public string InstallDate;
+        //public UInt16 PowerManagementCapabilities[];
+
+        public string ToShortString()
         {
-            public UInt16 Availability;
+            StringBuilder sb = new StringBuilder();
+            sb.Append($"{Description}{Index}, {Caption}, {SerialNumber}, ({GetHumanReadableDiskSize(Size)}, {InterfaceType})");
+            return sb.ToString();
+        }
 
-            public UInt32 BytesPerSector;
+        public override string ToString()
+        {
+            StringBuilder sb = new StringBuilder();
+            sb.AppendLine("Win32_DiskDrive {");
 
-            public string Caption;
-            public string CompressionMethod;
-            public UInt32 ConfigManagerErrorCode;
-            public bool ConfigManagerUserConfig;
-            public string CreationClassName;
+            sb.AppendLine($"Name={Name}");
 
-            public UInt64 DefaultBlockSize;
-            public string Description;
-            public string DeviceID;
+            sb.AppendLine($"BytesPerSector={BytesPerSector.ToString()}");
 
-            public bool ErrorCleared;
-            public string ErrorDescription;
-            public string ErrorMethodology;
+            sb.AppendLine($"Caption={Caption}");
+            sb.AppendLine($"CompressionMethod={CompressionMethod}");
+            sb.AppendLine($"ConfigManagerErrorCode={ConfigManagerErrorCode.ToString()}");
+            sb.AppendLine($"ConfigManagerUserConfig={ConfigManagerUserConfig.ToString()}");
+            sb.AppendLine($"CreationClassName={CreationClassName}");
 
-            public string FirmwareRevision;
+            sb.AppendLine($"DefaultBlockSize={DefaultBlockSize.ToString()}");
+            sb.AppendLine($"Description={Description}");
+            sb.AppendLine($"DeviceID={DeviceID}");
 
-            public UInt32 Index;
-            public string InterfaceType;
+            sb.AppendLine($"ErrorCleared={ErrorCleared.ToString()}");
+            sb.AppendLine($"ErrorDescription={ErrorDescription}");
+            sb.AppendLine($"ErrorMethodology={ErrorMethodology}");
 
-            public UInt32 LastErrorCode;
+            sb.AppendLine($"FirmwareRevision={FirmwareRevision}");
 
-            public string Manufacturer;
-            public UInt64 MaxBlockSize;
-            public UInt64 MaxMediaSize;
-            public bool MediaLoaded;
-            public string MediaType;
-            public UInt64 MinBlockSize;
-            public string Model;
+            sb.AppendLine($"Index={Index.ToString()}");
+            sb.AppendLine($"InterfaceType={InterfaceType}");
 
-            public string Name;
-            public bool NeedsCleaning;
-            public UInt32 NumberOfMediaSupported;
+            sb.AppendLine($"LastErrorCode={LastErrorCode.ToString()}");
 
-            public UInt32 Partitions;
-            public string PNPDeviceID;
-            public bool PowerManagementSupported;
+            sb.AppendLine($"Manufacturer={Manufacturer}");
+            sb.AppendLine($"MaxBlockSize={MaxBlockSize.ToString()}");
+            sb.AppendLine($"MaxMediaSize={MaxMediaSize.ToString()}");
+            sb.AppendLine($"MediaLoaded={MediaLoaded.ToString()}");
+            sb.AppendLine($"MediaType={MediaType}");
+            sb.AppendLine($"MinBlockSize={MinBlockSize.ToString()}");
+            sb.AppendLine($"Model={Model}");
 
-            public UInt32 SCSIBus;
-            public UInt16 SCSILogicalUnit;
-            public UInt16 SCSIPort;
-            public UInt16 SCSITargetId;
-            public UInt32 SectorsPerTrack;
-            public string SerialNumber;
-            public UInt32 Signature;
-            public UInt64 Size;
-            public string Status;
-            public UInt16 StatusInfo;
-            public string SystemCreationClassName;
-            public string SystemName;
+            sb.AppendLine($"NeedsCleaning={NeedsCleaning.ToString()}");
+            sb.AppendLine($"NumberOfMediaSupported={NumberOfMediaSupported.ToString()}");
 
-            public UInt64 TotalCylinders;
-            public UInt32 TotalHeads;
-            public UInt64 TotalSectors;
-            public UInt64 TotalTracks;
-            public UInt32 TracksPerCylinder;
-            //public UInt16 Capabilities[];
-            //public string CapabilityDescriptions[];
-            //public string InstallDate;
-            //public UInt16 PowerManagementCapabilities[];
+            sb.AppendLine($"Partitions={Partitions.ToString()}");
+            sb.AppendLine($"PNPDeviceID={PNPDeviceID}");
+            sb.AppendLine($"PowerManagementSupported={PowerManagementSupported.ToString()}");
 
-            public string ToShortString()
+            sb.AppendLine($"SCSIBus={SCSIBus.ToString()}");
+            sb.AppendLine($"SCSILogicalUnit={SCSILogicalUnit.ToString()}");
+            sb.AppendLine($"SCSIPort={SCSIPort.ToString()}");
+            sb.AppendLine($"SCSITargetId={SCSITargetId.ToString()}");
+            sb.AppendLine($"SectorsPerTrack={SectorsPerTrack.ToString()}");
+            sb.AppendLine($"SerialNumber={SerialNumber}");
+            sb.AppendLine($"Signature={Signature.ToString()}");
+            sb.AppendLine($"Size={Size.ToString()}");
+            sb.AppendLine($"Status={Status}");
+            sb.AppendLine($"StatusInfo={StatusInfo.ToString()}");
+            sb.AppendLine($"SystemCreationClassName={SystemCreationClassName}");
+            sb.AppendLine($"SystemName={SystemName}");
+
+            sb.AppendLine($"TotalCylinders={TotalCylinders.ToString()}");
+            sb.AppendLine($"TotalHeads={TotalHeads.ToString()}");
+            sb.AppendLine($"TotalSectors={TotalSectors.ToString()}");
+            sb.AppendLine($"TotalTracks={TotalTracks.ToString()}");
+            sb.AppendLine($"TracksPerCylinder={TracksPerCylinder.ToString()}");
+            sb.AppendLine("}");
+            //sb.AppendLine($"InstallDate={InstallDate.ToString()}");
+            //sb.AppendLine({PowerManagementCapabilities[]}");
+            return sb.ToString();
+        }
+
+        static string GetHumanReadableDiskSize(ulong byteSize)
+        {
+            string[] units = new string[] { "B", "KB", "MB", "GB", "TB", "PB", "EB", "ZB", "YB" };
+            int idx = 0;
+            double dHumanReadableSize = byteSize;
+
+            while (dHumanReadableSize >= 1024 && idx < units.Length - 1)
             {
-                StringBuilder sb = new StringBuilder();
-                sb.Append($"{Description}{Index}, {Caption}, {SerialNumber}, ({GetHumanReadableDiskSize(Size)}, {InterfaceType})");
-                return sb.ToString();
+                dHumanReadableSize /= 1024;
+                idx++;
             }
 
-            public override string ToString()
-            {
-                StringBuilder sb = new StringBuilder();
-                sb.AppendLine("Win32_DiskDrive {");
-
-                sb.AppendLine($"Name={Name}");
-
-                sb.AppendLine($"BytesPerSector={BytesPerSector.ToString()}");
-
-                sb.AppendLine($"Caption={Caption}");
-                sb.AppendLine($"CompressionMethod={CompressionMethod}");
-                sb.AppendLine($"ConfigManagerErrorCode={ConfigManagerErrorCode.ToString()}");
-                sb.AppendLine($"ConfigManagerUserConfig={ConfigManagerUserConfig.ToString()}");
-                sb.AppendLine($"CreationClassName={CreationClassName}");
-
-                sb.AppendLine($"DefaultBlockSize={DefaultBlockSize.ToString()}");
-                sb.AppendLine($"Description={Description}");
-                sb.AppendLine($"DeviceID={DeviceID}");
-
-                sb.AppendLine($"ErrorCleared={ErrorCleared.ToString()}");
-                sb.AppendLine($"ErrorDescription={ErrorDescription}");
-                sb.AppendLine($"ErrorMethodology={ErrorMethodology}");
-
-                sb.AppendLine($"FirmwareRevision={FirmwareRevision}");
-
-                sb.AppendLine($"Index={Index.ToString()}");
-                sb.AppendLine($"InterfaceType={InterfaceType}");
-
-                sb.AppendLine($"LastErrorCode={LastErrorCode.ToString()}");
-
-                sb.AppendLine($"Manufacturer={Manufacturer}");
-                sb.AppendLine($"MaxBlockSize={MaxBlockSize.ToString()}");
-                sb.AppendLine($"MaxMediaSize={MaxMediaSize.ToString()}");
-                sb.AppendLine($"MediaLoaded={MediaLoaded.ToString()}");
-                sb.AppendLine($"MediaType={MediaType}");
-                sb.AppendLine($"MinBlockSize={MinBlockSize.ToString()}");
-                sb.AppendLine($"Model={Model}");
-
-                sb.AppendLine($"NeedsCleaning={NeedsCleaning.ToString()}");
-                sb.AppendLine($"NumberOfMediaSupported={NumberOfMediaSupported.ToString()}");
-
-                sb.AppendLine($"Partitions={Partitions.ToString()}");
-                sb.AppendLine($"PNPDeviceID={PNPDeviceID}");
-                sb.AppendLine($"PowerManagementSupported={PowerManagementSupported.ToString()}");
-
-                sb.AppendLine($"SCSIBus={SCSIBus.ToString()}");
-                sb.AppendLine($"SCSILogicalUnit={SCSILogicalUnit.ToString()}");
-                sb.AppendLine($"SCSIPort={SCSIPort.ToString()}");
-                sb.AppendLine($"SCSITargetId={SCSITargetId.ToString()}");
-                sb.AppendLine($"SectorsPerTrack={SectorsPerTrack.ToString()}");
-                sb.AppendLine($"SerialNumber={SerialNumber}");
-                sb.AppendLine($"Signature={Signature.ToString()}");
-                sb.AppendLine($"Size={Size.ToString()}");
-                sb.AppendLine($"Status={Status}");
-                sb.AppendLine($"StatusInfo={StatusInfo.ToString()}");
-                sb.AppendLine($"SystemCreationClassName={SystemCreationClassName}");
-                sb.AppendLine($"SystemName={SystemName}");
-
-                sb.AppendLine($"TotalCylinders={TotalCylinders.ToString()}");
-                sb.AppendLine($"TotalHeads={TotalHeads.ToString()}");
-                sb.AppendLine($"TotalSectors={TotalSectors.ToString()}");
-                sb.AppendLine($"TotalTracks={TotalTracks.ToString()}");
-                sb.AppendLine($"TracksPerCylinder={TracksPerCylinder.ToString()}");
-                sb.AppendLine("}");
-                //sb.AppendLine($"InstallDate={InstallDate.ToString()}");
-                //sb.AppendLine({PowerManagementCapabilities[]}");
-                return sb.ToString();
-            }
-
-            static string GetHumanReadableDiskSize(ulong byteSize)
-            {
-                string[] units = new string[] { "B", "KB", "MB", "GB", "TB", "PB", "EB", "ZB", "YB" };
-                int idx = 0;
-                double dHumanReadableSize = byteSize;
-
-                while (dHumanReadableSize >= 1024 && idx < units.Length - 1)
-                {
-                    dHumanReadableSize /= 1024;
-                    idx++;
-                }
-
-                string sizeStr = dHumanReadableSize.ToString(idx > 0 ? "#.##" : "#");
-                return string.Format("{0}{1}", sizeStr, units[idx]);
-            }
+            string sizeStr = dHumanReadableSize.ToString(idx > 0 ? "#.##" : "#");
+            return string.Format("{0}{1}", sizeStr, units[idx]);
         }
     }
 }
