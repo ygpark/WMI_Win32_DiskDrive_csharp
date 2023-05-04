@@ -13,12 +13,12 @@ namespace WMI_Win32_DiskDrive_csharp
     /// 
     /// <example>
     ///     var win32diskDrive = WMI_Win32_DiskDrive.Instance;
+    ///     // win32diskDrive.Refresh(); //필요한 경우에만 호출
     ///     for (int i = 0; i < win32diskDrive.Count; i++)
     ///     {
     ///       Console.WriteLine(win32diskDrive[i].ToString());
     ///     }
     ///     
-    ///     win32diskDrive.Refresh();
     ///     Console.WriteLine(win32diskDrive.GetByDidskIndex(0).ToString());
     ///
     /// </example>
@@ -70,6 +70,11 @@ namespace WMI_Win32_DiskDrive_csharp
         public void Refresh()
         {
             initialize();
+        }
+
+        public List<Win32_DiskDrive_Info> ToList()
+        {
+            return new List<Win32_DiskDrive_Info>(_win32_diskdrives);
         }
 
         /// 
